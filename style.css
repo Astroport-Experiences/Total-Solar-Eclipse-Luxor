@@ -34,6 +34,7 @@
   --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
   --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
   --step-head: clamp(2.25rem, 1.3rem + 3.6vw, 4.5rem);
+  --step-chapter: clamp(3rem, 1.4rem + 5.6vw, 7rem);   /* the title of each chapter */
   --step-display: clamp(5.5rem, 14vw, 13.75rem);
 
   /* Space and frame */
@@ -109,11 +110,14 @@ a { color: inherit; text-underline-offset: 0.2em; }
 }
 .skip:focus { top: 12px; }
 
+/* Chapter titles: a size of their own, set in sandstone gold, so each reads as a new chapter */
 .h-section {
-  font-size: var(--step-head);
+  font-size: var(--step-chapter);
   font-weight: 500;
-  line-height: 0.95;
-  letter-spacing: -0.04em;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  color: var(--sand);
+  padding-bottom: 0.08em;   /* room for descenders inside the reveal */
 }
 
 /* ---------- Chapters: each a flat field with its own ink ---------- */
@@ -180,8 +184,25 @@ a { color: inherit; text-underline-offset: 0.2em; }
 /* ---------- Hero: colour field, two-ink statement ---------- */
 .hero {
   padding: 0;
-  background: var(--sky-now, var(--sky));
+  background: var(--tone-why);
 }
+/* daylight over Luxor Temple; a shade of the next chapter's tone deepens over it toward totality */
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center 65%;
+}
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  background: var(--tone-why);
+  opacity: var(--shade, 0.5);
+}
+.hero-stage > :where(:not(.hero-photo):not(.hero-shade)) { position: relative; z-index: 1; }
 .scene .hero { height: 220vh; }
 .hero-stage {
   position: sticky;
@@ -207,7 +228,7 @@ a { color: inherit; text-underline-offset: 0.2em; }
 }
 .hero-title span { display: block; }
 .hero-pale { color: var(--sky-pale); }
-.hero-dark { color: var(--dark-ink-now, #000000); }
+.hero-dark { color: var(--ink-light); }
 
 /* The eclipse: the Moon is only visible where it crosses the Sun, as in the real sky.
    At totality the real corona (a 1999 photograph) appears around it. */
@@ -357,16 +378,16 @@ a { color: inherit; text-underline-offset: 0.2em; }
   column-gap: var(--gutter);
 }
 .stages-head {
-  grid-column: 1 / 6;
+  grid-column: 1 / 8;
   grid-row: 1;
   align-self: start;
-  z-index: 1;
+  margin-bottom: 56px;
 }
 .stages-head p { margin-top: 24px; max-width: 40ch; }
 
 .stage-list {
   grid-column: 1 / -1;
-  grid-row: 1;
+  grid-row: 2;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   column-gap: var(--gutter);
@@ -612,6 +633,13 @@ a { color: inherit; text-underline-offset: 0.2em; }
   transition-delay: calc(var(--i, 0) * 70ms);
 }
 .js [data-rise].is-in { opacity: 1; transform: none; }
+.js .h-section[data-rise] {
+  opacity: 1;
+  clip-path: inset(0 -5% 100% -5%);
+  transform: translateY(0.35em);
+  transition: clip-path 900ms var(--ease-out), transform 900ms var(--ease-out);
+}
+.js .h-section[data-rise].is-in { clip-path: inset(-10% -5% -25% -5%); transform: none; }
 
 .mosaic-photo img { transform: scale(1.05); transition: transform 1.4s var(--ease-out); }
 .mosaic-photo.is-in img { transform: scale(1); }
@@ -722,7 +750,7 @@ a { color: inherit; text-underline-offset: 0.2em; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .js [data-rise] { opacity: 1; transform: none; transition: none; }
+  .js [data-rise] { opacity: 1; transform: none; transition: none; clip-path: none; }
   .mosaic-photo img { transform: none; transition: none; }
   .button, .bar, .bar-logo img, .poster-list li, .safety-stage img { transition: none; }
 }

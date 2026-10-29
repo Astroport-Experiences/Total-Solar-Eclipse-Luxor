@@ -88,7 +88,7 @@ const toneOf = (name) => {
 const chapterEls = [".why", ".minutes", ".safety", ".next", ".questions", ".footer"].map((s) => document.querySelector(s));
 const chapterTones = ["--tone-why", "--tone-minutes", "--tone-safety", "--tone-next", "--tone-questions", "--tone-footer"].map(toneOf);
 const smooth = (t) => t * t * (3 - 2 * t);
-let heroSkyRgb = SKY;
+const heroSkyRgb = NIGHT;   // the first screen ends on the next chapter's tone
 let layout = null;
 
 // measure once (and again on resize), not on every frame
@@ -110,17 +110,16 @@ function updateEclipse(y) {
   const dark = scene ? Math.pow(clamp((cov - 0.75) / 0.25), 1.6) : 0;
   const coronaOpacity = scene ? clamp((p - 0.76) / 0.1) : 0;
 
-  heroSkyRgb = mix(SKY, NIGHT, dark);
-  heroSky = rgb(heroSkyRgb);
+  // the shade over the daylight photograph deepens with the eclipse and closes completely at the end,
+  // where it matches the next chapter's tone
+  const shade = scene ? 0.5 + 0.42 * dark + 0.08 * clamp((p - 0.86) / 0.14) : 0.5;
+  hero.style.setProperty("--shade", shade.toFixed(3));
   if (!scene) return;
   hero.style.setProperty("--moon-x", (dist * 0.935).toFixed(4));
   hero.style.setProperty("--moon-y", (dist * -0.355).toFixed(4));
   hero.style.setProperty("--corona", coronaOpacity.toFixed(3));
   // the blended corona layer is costly to draw: take it out entirely until it is needed
   corona.style.visibility = coronaOpacity > 0 ? "visible" : "hidden";
-  hero.style.setProperty("--sky-now", heroSky);
-  // the dark line of the title flips to white early, so it never sits grey on a grey-blue sky
-  hero.style.setProperty("--dark-ink-now", rgb(mix([0, 0, 0], [255, 255, 255], clamp((dark - 0.08) / 0.18))));
 
   const pct = Math.round(cov * 100);
   let text;
@@ -161,7 +160,8 @@ function frame(y = window.scrollY) {
   // one colour for the whole screen; the bar wears it too, except while it sits over the first screen
   const tint = rgb(groundAt(y + layout.vh / 2));
   ground.style.backgroundColor = tint;
-  bar.style.setProperty("--bar-ground", y + layout.barMid < layout.heroBottom ? heroSky : tint);
+  // over the photograph the bar is clear; below it, it wears the page's tint
+  bar.style.setProperty("--bar-ground", y + layout.barMid < layout.heroBottom ? "transparent" : tint);
   revealPassed();
 }
 
@@ -197,7 +197,8 @@ const groups = [
   ".safety-pin-inner > h2, .safety-pin-inner > p",
   ".safety-block",
   "#next h2, .poster-list li",
-  ".band"
+  ".band",
+  ".band-head h2"
 ];
 
 if (!reduceMotion) {
