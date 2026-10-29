@@ -1,4 +1,4 @@
-// Countdown to greatest eclipse of 2 August 2027 (approx. 10:07 UTC)
+// Countdown to totality in Luxor, 2 August 2027 (greatest eclipse approx. 10:07 UTC, 13:07 local)
 const target = new Date("2027-08-02T10:07:00Z").getTime();
 
 function pad(n) {
@@ -10,7 +10,7 @@ function updateCountdown() {
 
   if (diff <= 0) {
     document.getElementById("countdown").innerHTML =
-      "<p>Totality is happening (or has happened)! 🌑✨</p>";
+      "<p>Totality has reached Luxor.</p>";
     clearInterval(timer);
     return;
   }

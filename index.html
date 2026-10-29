@@ -3,173 +3,285 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Total Solar Eclipse — When Day Turns to Night</title>
-  <meta name="description" content="Everything about total solar eclipses: how they happen, the phases, how to watch safely, and upcoming eclipses through 2035.">
+  <title>Total Solar Eclipse over Luxor — 2 August 2027</title>
+  <meta name="description" content="Six minutes and twenty-three seconds of totality over the temples of Luxor on 2 August 2027: why Luxor, what happens minute by minute, how to watch safely, and the eclipses that follow.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Marcellus&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+  <a class="skip" href="#main">Skip to content</a>
+
   <header class="nav">
-    <a href="#" class="logo">◐ Totality</a>
-    <nav>
-      <a href="#what">What is it?</a>
-      <a href="#phases">Phases</a>
+    <a href="#top" class="wordmark">Totality <span>Luxor</span></a>
+    <nav aria-label="Sections">
+      <a href="#why">Why Luxor</a>
+      <a href="#minutes">The six minutes</a>
       <a href="#safety">Safety</a>
       <a href="#upcoming">Upcoming</a>
       <a href="#faq">FAQ</a>
     </nav>
   </header>
 
-  <section class="hero">
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <div class="sky" aria-hidden="true"></div>
+
     <div class="eclipse" aria-hidden="true">
       <div class="corona"></div>
-      <div class="sun"></div>
       <div class="moon"></div>
     </div>
-    <h1>Total Solar Eclipse</h1>
-    <p class="tagline">For a few minutes, the Moon swallows the Sun, the sky goes dark, and the corona appears.</p>
 
-    <div class="countdown-box">
-      <p class="countdown-label">Next total solar eclipse: <strong>2 August 2027</strong>, Spain · Morocco · Egypt · Saudi Arabia</p>
-      <div id="countdown" class="countdown">
-        <div><span id="days">--</span><small>days</small></div>
-        <div><span id="hours">--</span><small>hours</small></div>
-        <div><span id="minutes">--</span><small>min</small></div>
-        <div><span id="seconds">--</span><small>sec</small></div>
+    <div class="hero-copy">
+      <p class="hero-date">Monday, 2 August 2027 · Luxor, Egypt</p>
+      <h1 id="hero-title">
+        <span class="duration-figure">6:23</span>
+        <span class="duration-words">of daytime darkness over the temples of Thebes</span>
+      </h1>
+      <p class="hero-lede">The longest total solar eclipse on land this century. It passes almost directly overhead in the clearest skies on the path.</p>
+
+      <div class="countdown" role="timer" aria-live="off">
+        <p class="countdown-label">Until totality reaches Luxor</p>
+        <div id="countdown" class="countdown-units">
+          <div><span id="days">--</span><small>days</small></div>
+          <div><span id="hours">--</span><small>hours</small></div>
+          <div><span id="minutes">--</span><small>min</small></div>
+          <div><span id="seconds">--</span><small>sec</small></div>
+        </div>
       </div>
     </div>
-    <a href="#upcoming" class="btn">See upcoming eclipses</a>
+
+    <svg class="temple" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="var(--horizon-ember)" stop-opacity="0"/>
+          <stop offset="0.5" stop-color="var(--horizon-ember)" stop-opacity="0.5"/>
+          <stop offset="1" stop-color="var(--karnak-sandstone)" stop-opacity="0.95"/>
+        </linearGradient>
+        <!-- Open papyrus column, as in the Luxor Temple colonnade -->
+        <g id="column">
+          <rect x="-24" y="60" width="48" height="10"/>
+          <path d="M-38 70 L38 70 Q31 100 23 110 L-23 110 Q-31 100 -38 70 Z"/>
+          <rect x="-23" y="110" width="46" height="6"/>
+          <path d="M-21 116 L21 116 L24 292 L-24 292 Z"/>
+          <rect x="-30" y="292" width="60" height="8"/>
+        </g>
+      </defs>
+      <rect class="horizon-glow" x="0" y="120" width="1440" height="180" fill="url(#glow)"/>
+      <g class="colonnade">
+        <rect x="0" y="30" width="1440" height="30"/>
+        <use href="#column" x="60"/>
+        <use href="#column" x="180"/>
+        <use href="#column" x="300"/>
+        <use href="#column" x="420"/>
+        <use href="#column" x="540"/>
+        <use href="#column" x="660"/>
+        <use href="#column" x="780"/>
+        <use href="#column" x="900"/>
+        <use href="#column" x="1020"/>
+        <use href="#column" x="1140"/>
+        <use href="#column" x="1260"/>
+        <use href="#column" x="1380"/>
+        <rect x="0" y="300" width="1440" height="20"/>
+      </g>
+    </svg>
   </section>
 
-  <main>
+  <main id="main">
 
-    <section id="what" class="section">
-      <h2>What is a total solar eclipse?</h2>
-      <div class="two-col">
-        <div>
-          <p>A solar eclipse happens when the Moon passes between Earth and the Sun. In a <strong>total</strong> eclipse, the Moon covers the Sun's bright disc completely. For a short time you can see the Sun's faint outer atmosphere, the <strong>corona</strong>, with your eyes.</p>
-          <p>It works because of a coincidence: the Sun is about <strong>400 times wider</strong> than the Moon and also about <strong>400 times farther away</strong>. From Earth, both look almost exactly the same size.</p>
-          <p>The Moon's darkest shadow, the <strong>umbra</strong>, is only about 100–250 km wide, and it races across Earth at over 1,700 km/h. Only people inside this narrow <em>path of totality</em> see the total eclipse. Everyone else sees a partial one.</p>
-        </div>
-        <div class="card-grid">
-          <div class="card"><h3>Total</h3><p>The Moon covers the Sun completely and the corona appears.</p></div>
-          <div class="card"><h3>Annular</h3><p>The Moon is farther away and looks too small, leaving a "ring of fire".</p></div>
-          <div class="card"><h3>Partial</h3><p>The Moon covers only part of the Sun, like a bite taken out of it.</p></div>
-          <div class="card"><h3>Hybrid</h3><p>Rare: total from some places on Earth and annular from others.</p></div>
-        </div>
+    <section id="why" class="section" aria-labelledby="why-title">
+      <div class="section-head">
+        <h2 id="why-title">Why Luxor</h2>
+        <p>The shadow of the Moon crosses southern Spain, North Africa and Arabia. Luxor is close to the point of greatest eclipse, where totality lasts longest and the Sun is highest in the sky.</p>
       </div>
+
+      <div class="table-wrap">
+        <table class="compare">
+          <caption class="visually-hidden">Comparison of three places to watch the 2 August 2027 eclipse</caption>
+          <thead>
+            <tr>
+              <th scope="col"><span class="visually-hidden">Measure</span></th>
+              <th scope="col" class="is-luxor">Luxor, Egypt</th>
+              <th scope="col">Southern Spain</th>
+              <th scope="col">Northern Morocco</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Totality</th>
+              <td class="is-luxor"><strong>About 6 min 20 s</strong></td>
+              <td>Up to about 4½ min</td>
+              <td>About 4½ min</td>
+            </tr>
+            <tr>
+              <th scope="row">Time of day</th>
+              <td class="is-luxor">Early afternoon</td>
+              <td>Mid-morning</td>
+              <td>Mid-morning</td>
+            </tr>
+            <tr>
+              <th scope="row">Sun's height</th>
+              <td class="is-luxor">Nearly overhead</td>
+              <td>Well up in the south-east</td>
+              <td>Well up in the south-east</td>
+            </tr>
+            <tr>
+              <th scope="row">August skies</th>
+              <td class="is-luxor">Almost always clear</td>
+              <td>Usually clear, some coastal haze</td>
+              <td>Usually clear, coastal fog possible</td>
+            </tr>
+            <tr>
+              <th scope="row">Setting</th>
+              <td class="is-luxor">Karnak, Luxor Temple and the Valley of the Kings</td>
+              <td>Cádiz, Tarifa and the Strait of Gibraltar</td>
+              <td>Tangier and the Atlantic coast</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Durations are rounded. Check NASA's interactive path map for your exact viewing spot before you book.</p>
     </section>
 
-    <section id="phases" class="section alt">
-      <h2>The phases of a total eclipse</h2>
+    <section id="minutes" class="section section-lapis" aria-labelledby="minutes-title">
+      <div class="section-head">
+        <h2 id="minutes-title">The six minutes, in order</h2>
+        <p>The partial eclipse builds slowly for over an hour. Then, in a few seconds, the light goes. Here's what to watch for, measured from the moment totality begins in Luxor.</p>
+      </div>
+
       <ol class="timeline">
-        <li><h3>First contact</h3><p>The Moon's edge first touches the Sun and the partial eclipse begins. This phase lasts about an hour or more.</p></li>
-        <li><h3>Partial phase</h3><p>The light fades and turns strange and sharp. The air cools. Shadows under trees become small crescents.</p></li>
-        <li><h3>Baily's beads &amp; diamond ring</h3><p>The last sunlight shines through valleys on the Moon's edge, making glittering beads and one brilliant "diamond".</p></li>
-        <li class="highlight"><h3>Totality</h3><p>Darkness falls. The pearly corona, the pink prominences, and bright planets and stars appear. A 360° sunset glows on the horizon. <strong>This is the only time it is safe to look without eclipse glasses.</strong></p></li>
-        <li><h3>Third contact</h3><p>The diamond ring appears on the other side. <strong>Put your glasses back on.</strong></p></li>
-        <li><h3>Fourth contact</h3><p>The Moon leaves the Sun's disc completely and the eclipse is over.</p></li>
+        <li>
+          <span class="t">−1 h 20 min</span>
+          <h3>First contact</h3>
+          <p>A small notch appears on the Sun's edge. Eclipse glasses on.</p>
+        </li>
+        <li>
+          <span class="t">−15 min</span>
+          <h3>The light turns strange</h3>
+          <p>Shadows sharpen, the air cools, and gaps between leaves cast tiny crescents.</p>
+        </li>
+        <li>
+          <span class="t">−10 s</span>
+          <h3>Diamond ring</h3>
+          <p>The last sunlight shines through valleys on the Moon's edge as Baily's beads.</p>
+        </li>
+        <li class="is-totality">
+          <span class="t">0:00 – 6:23</span>
+          <h3>Totality</h3>
+          <p>Glasses off. The corona spreads out around the black Moon, Venus and Jupiter appear, and a sunset glows on every horizon at once.</p>
+        </li>
+        <li>
+          <span class="t">+6:23</span>
+          <h3>Second diamond ring</h3>
+          <p>A bright point flares on the opposite edge. Glasses back on immediately.</p>
+        </li>
+        <li>
+          <span class="t">+1 h 20 min</span>
+          <h3>Last contact</h3>
+          <p>The Moon slides clear of the Sun and ordinary daylight returns.</p>
+        </li>
       </ol>
     </section>
 
-    <section id="safety" class="section">
-      <h2>Watch safely</h2>
-      <div class="safety-grid">
-        <div class="safe">
-          <h3>✔ Do</h3>
+    <section id="safety" class="section" aria-labelledby="safety-title">
+      <div class="section-head">
+        <h2 id="safety-title">Watch safely</h2>
+        <p>The Sun is only safe to look at with bare eyes during totality itself. At every other moment you need proper protection. Eye damage from the Sun is painless and can be permanent.</p>
+      </div>
+
+      <div class="safety">
+        <div class="safety-col safety-do">
+          <h3>Do</h3>
           <ul>
-            <li>Use certified eclipse glasses that meet the <strong>ISO 12312-2</strong> standard, or a handheld solar viewer.</li>
-            <li>Check your glasses for scratches or holes before you use them.</li>
-            <li>Put solar filters on the <em>front</em> of telescopes, binoculars and camera lenses.</li>
-            <li>Try a pinhole projector, or look at the crescents in the shadows of leaves.</li>
-            <li>Take your glasses off <em>only</em> during totality, then put them back on as soon as the light returns.</li>
+            <li>Wear eclipse glasses certified to <strong>ISO 12312-2</strong>, or use a handheld solar viewer.</li>
+            <li>Check your glasses for scratches or pinholes before you use them.</li>
+            <li>Fit solar filters to the <em>front</em> of telescopes, binoculars and camera lenses.</li>
+            <li>Take your glasses off only once the last of the Sun has gone. Put them back on at the second diamond ring.</li>
+            <li>Bring water and shade. The August afternoon in Luxor is often above 40 °C.</li>
           </ul>
         </div>
-        <div class="unsafe">
-          <h3>✘ Don't</h3>
+        <div class="safety-col safety-dont">
+          <h3>Don't</h3>
           <ul>
-            <li>Look at the partly covered Sun with your bare eyes, even when only a little is showing.</li>
-            <li>Use sunglasses (even very dark ones), smoked glass, X-ray film or CDs.</li>
-            <li>Look through a telescope, binoculars or a camera viewfinder without a proper solar filter, even while wearing eclipse glasses.</li>
-            <li>Leave children alone while they watch.</li>
+            <li>Look at the partly covered Sun without protection, even when only a sliver is showing.</li>
+            <li>Rely on sunglasses, smoked glass, X-ray film or CDs.</li>
+            <li>Look through a telescope, binoculars or camera viewfinder without a front filter, even while wearing eclipse glasses.</li>
+            <li>Leave children to watch without an adult.</li>
           </ul>
         </div>
       </div>
-      <p class="note">Damage to the eye (solar retinopathy) can happen without any pain, and it can be permanent.</p>
     </section>
 
-    <section id="upcoming" class="section alt">
-      <h2>Upcoming total solar eclipses</h2>
-      <div class="eclipse-list">
-        <article class="eclipse-card featured">
-          <span class="badge">Next up</span>
-          <h3>2 August 2027</h3>
-          <p class="where">Spain · Gibraltar · Morocco · Algeria · Tunisia · Libya · Egypt · Saudi Arabia · Yemen · Somalia</p>
-          <p class="duration">Longest totality: <strong>6 min 23 s</strong> (near Luxor, Egypt)</p>
-          <p>The longest totality on land this century. You can watch it over the temples of Luxor, from southern Spain, or in Tangier.</p>
-        </article>
-        <article class="eclipse-card">
-          <h3>22 July 2028</h3>
-          <p class="where">Australia · New Zealand</p>
-          <p class="duration">Longest totality: <strong>5 min 10 s</strong></p>
-          <p>The path crosses Australia from the Kimberley to Sydney, then reaches New Zealand's South Island.</p>
-        </article>
-        <article class="eclipse-card">
-          <h3>25 November 2030</h3>
-          <p class="where">Namibia · Botswana · South Africa · Lesotho · Australia</p>
-          <p class="duration">Longest totality: <strong>3 min 44 s</strong></p>
-          <p>A summer eclipse in the southern hemisphere, over the deserts of southern Africa and then outback Australia.</p>
-        </article>
-        <article class="eclipse-card">
-          <h3>30 March 2033</h3>
-          <p class="where">Alaska · Russian Far East</p>
-          <p class="duration">Longest totality: <strong>2 min 37 s</strong></p>
-          <p>An Arctic eclipse. It may even happen while the northern lights are visible.</p>
-        </article>
-        <article class="eclipse-card">
-          <h3>20 March 2034</h3>
-          <p class="where">Central &amp; North Africa · Egypt · Middle East · Iran · Pakistan · India · China</p>
-          <p class="duration">Longest totality: <strong>4 min 09 s</strong></p>
-          <p>A long path from the Gulf of Guinea across Asia to the Himalayas.</p>
-        </article>
-        <article class="eclipse-card">
-          <h3>2 September 2035</h3>
-          <p class="where">China · North Korea · South Korea · Japan</p>
-          <p class="duration">Longest totality: <strong>2 min 54 s</strong></p>
-          <p>The path passes close to Beijing and crosses Japan near Tokyo.</p>
-        </article>
+    <section id="upcoming" class="section section-lapis" aria-labelledby="upcoming-title">
+      <div class="section-head">
+        <h2 id="upcoming-title">After Luxor</h2>
+        <p>The next total solar eclipses, with the longest totality on each path.</p>
       </div>
-      <p class="note">Times and paths are summaries. Before you plan a trip, check detailed maps from NASA or the national astronomy body of the country you'll visit.</p>
+
+      <ul class="upcoming">
+        <li>
+          <span class="u-date">22 July 2028</span>
+          <span class="u-where">Australia · New Zealand</span>
+          <span class="u-len">5 min 10 s</span>
+        </li>
+        <li>
+          <span class="u-date">25 November 2030</span>
+          <span class="u-where">Namibia · Botswana · South Africa · Australia</span>
+          <span class="u-len">3 min 44 s</span>
+        </li>
+        <li>
+          <span class="u-date">30 March 2033</span>
+          <span class="u-where">Alaska · Russian Far East</span>
+          <span class="u-len">2 min 37 s</span>
+        </li>
+        <li>
+          <span class="u-date">20 March 2034</span>
+          <span class="u-where">Central Africa · Egypt · Middle East · India · China</span>
+          <span class="u-len">4 min 09 s</span>
+        </li>
+        <li>
+          <span class="u-date">2 September 2035</span>
+          <span class="u-where">China · Korea · Japan</span>
+          <span class="u-len">2 min 54 s</span>
+        </li>
+      </ul>
     </section>
 
-    <section id="faq" class="section">
-      <h2>Frequently asked questions</h2>
-      <details>
-        <summary>How often do total solar eclipses happen?</summary>
-        <p>About once every 18 months somewhere on Earth. But any single spot sees one only about once every 375 years on average.</p>
-      </details>
-      <details>
-        <summary>Why doesn't an eclipse happen every new moon?</summary>
-        <p>The Moon's orbit is tilted about 5° compared with Earth's orbit. At most new moons, the Moon's shadow passes above or below Earth.</p>
-      </details>
-      <details>
-        <summary>How long does totality last?</summary>
-        <p>From a few seconds to a maximum of about 7½ minutes. It depends on how far away the Moon is, where Earth is in its orbit, and where you stand inside the path.</p>
-      </details>
-      <details>
-        <summary>Is a 99% partial eclipse nearly as good?</summary>
-        <p>No. Even 1% of the Sun is still dazzlingly bright. The corona, the darkness and the stars appear only at 100%, so it's worth travelling into the path of totality.</p>
-      </details>
-      <details>
-        <summary>Can I photograph it with my phone?</summary>
-        <p>Yes. During the partial phases, hold a solar filter over the lens. During totality, remove the filter and lock the exposure. Don't forget to stop and simply look, too.</p>
-      </details>
+    <section id="faq" class="section" aria-labelledby="faq-title">
+      <div class="section-head">
+        <h2 id="faq-title">Questions</h2>
+      </div>
+
+      <div class="faq">
+        <details>
+          <summary>Why is this eclipse so long?</summary>
+          <p>In early August, Earth is near its farthest point from the Sun, so the Sun looks slightly smaller. The Moon is also near its closest point to Earth, so it looks slightly larger. A large Moon over a small Sun makes a long totality, and Luxor sits close to the middle of the path.</p>
+        </details>
+        <details>
+          <summary>What time does totality start in Luxor?</summary>
+          <p>Shortly after 1 pm local time. The exact second depends on where in Luxor you stand. NASA and Egyptian astronomical sources will publish local timings for each site.</p>
+        </details>
+        <details>
+          <summary>Is a 99% partial eclipse nearly as good?</summary>
+          <p>No. Even 1% of the Sun is dazzlingly bright. The darkness, the corona and the daytime stars appear only at 100%, which is why people travel into the path.</p>
+        </details>
+        <details>
+          <summary>How often does a total eclipse happen?</summary>
+          <p>Somewhere on Earth about once every 18 months. Any single place waits around 375 years on average between total eclipses.</p>
+        </details>
+        <details>
+          <summary>Can I photograph it with my phone?</summary>
+          <p>Yes. Hold a solar filter over the lens during the partial phases. During totality, remove it and lock the exposure. Then put the phone down for at least a minute and simply look.</p>
+        </details>
+      </div>
     </section>
 
   </main>
 
-  <footer>
-    <p>Made with wonder for the sky ✦ <a href="#">Back to top</a></p>
+  <footer class="footer">
+    <p>Totality Luxor · 2 August 2027</p>
+    <a href="#top">Back to top</a>
   </footer>
 
   <script src="script.js"></script>
