@@ -552,7 +552,7 @@ a { color: inherit; text-underline-offset: 0.2em; }
 /* ---------- Footer: the countdown as the headline ---------- */
 .footer {
   display: grid;
-  grid-template-rows: auto 1fr auto auto;
+  grid-template-rows: auto 1fr auto auto auto;
   min-height: 75svh;
   padding-top: calc(var(--bar-height) + 40px);
   padding-bottom: 32px;
@@ -565,9 +565,22 @@ a { color: inherit; text-underline-offset: 0.2em; }
 }
 .footer-logo { height: 46px; width: auto; }
 .footer-top p, .footer-top a { font-size: var(--step-body); }
-.countdown {
+.footer-contact {
   align-self: end;
-  margin: 80px 0 40px;
+  margin-top: 80px;
+  font-size: var(--step-head);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.footer-contact a {
+  text-decoration: none;
+  transition: color var(--t-ui) var(--ease-out);
+}
+.footer-contact a:hover { color: var(--accent); }
+.footer-number { display: block; margin-top: 8px; color: var(--sand); font-variant-numeric: tabular-nums; }
+.countdown {
+  margin: 32px 0 40px;
   font-size: var(--step-display);
   font-weight: 500;
   line-height: 0.88;
@@ -702,6 +715,7 @@ a { color: inherit; text-underline-offset: 0.2em; }
 
   .footer-top { grid-template-columns: 1fr; }
   .countdown { font-size: 15vw; }
+  .footer-contact { font-size: var(--step-lead); margin-top: 48px; }
   .scrub-clock { font-size: 21vw; }
   .footer-meta { display: grid; }
 }
