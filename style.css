@@ -38,6 +38,7 @@
   --measure: 62ch;
   --page: 1180px;
   --temple-height: clamp(150px, 19vw, 280px);
+  --logo-height: 54px;
 
   /* Shape and motion */
   --radius: 4px;
@@ -122,11 +123,24 @@ strong { font-weight: 600; }
   padding: var(--space-4) var(--space-4);
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+}
+.brand-logo {
+  display: block;
+  height: var(--logo-height);
+  width: auto;
+}
 .wordmark {
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--line);
   font-family: var(--font-display);
   font-size: 1.25rem;
+  line-height: 1.2;
   color: var(--corona-pearl);
-  text-decoration: none;
   white-space: nowrap;
 }
 .wordmark span { color: var(--karnak-sandstone); }
@@ -496,6 +510,17 @@ strong { font-weight: 600; }
   color: var(--pearl-muted);
 }
 .footer p { margin: 0; }
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.footer-logo {
+  display: block;
+  height: 42px;
+  width: auto;
+  opacity: 0.85;
+}
 
 /* ---------- Responsive ---------- */
 @media (max-width: 960px) {
@@ -517,6 +542,8 @@ strong { font-weight: 600; }
 }
 
 @media (max-width: 720px) {
+  :root { --logo-height: 42px; }
+  .wordmark { font-size: 1.1rem; }
   .nav { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
   .nav nav { justify-content: flex-start; gap: var(--space-1) var(--space-3); }
 
