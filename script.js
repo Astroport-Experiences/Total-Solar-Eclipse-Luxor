@@ -52,7 +52,11 @@ updateScrub();
 const hero = document.querySelector(".hero");
 const phase = document.getElementById("eclipse-phase");
 const SKY = [56, 88, 165];   // --sky
-const NIGHT = [0, 0, 0];     // the sky at totality: true black, so the corona photograph sits in it seamlessly
+// the sky at totality ends on the next chapter's tone, so the first screen hands over without an edge
+const NIGHT = (() => {
+  const hex = getComputedStyle(document.documentElement).getPropertyValue("--tone-why").trim().replace("#", "");
+  return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
+})();
 let heroSky = null;
 
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -96,42 +100,64 @@ if (document.documentElement.classList.contains("scene")) {
   window.addEventListener("scroll", () => requestAnimationFrame(updateEclipse), { passive: true });
   window.addEventListener("resize", updateEclipse);
   updateEclipse();
+} else {
+  heroSky = rgb(SKY);   // reduced motion: the still partial eclipse sits in the day sky
 }
 
-// ---------- The bar takes the colour of the chapter beneath it ----------
+// ---------- One ground for the page: its tint drifts between chapter tones as you scroll ----------
+// Each chapter has a tone (CSS custom properties --tone-*). Around every boundary the ground
+// blends from one tone to the next over most of a screen, so there is never a hard colour edge.
 const bar = document.querySelector(".bar");
-const chapters = [...document.querySelectorAll("[data-chapter]")].filter((el) => el !== bar);
+const rootStyle = getComputedStyle(document.documentElement);
+const toneOf = (name) => {
+  const hex = rootStyle.getPropertyValue(name).trim().replace("#", "");
+  return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
+};
+const parseRgb = (s) => (s.match(/\d+/g) || [0, 0, 0]).slice(0, 3).map(Number);
+const chapters = [
+  [hero, () => (heroSky ? parseRgb(heroSky) : [0, 0, 0])],
+  [document.querySelector(".why"), () => toneOf("--tone-why")],
+  [document.querySelector(".minutes"), () => toneOf("--tone-minutes")],
+  [document.querySelector(".safety"), () => toneOf("--tone-safety")],
+  [document.querySelector(".next"), () => toneOf("--tone-next")],
+  [document.querySelector(".questions"), () => toneOf("--tone-questions")],
+  [document.querySelector(".footer"), () => toneOf("--tone-footer")]
+];
+const smooth = (t) => t * t * (3 - 2 * t);
 
-function chapterUnderBar() {
-  const line = bar.offsetHeight / 2;
-  let current = null;
-  for (const el of chapters) {
-    // a band inside a chapter (the questions' heading band) counts as its parent's colour
-    const r = el.getBoundingClientRect();
-    if (r.top <= line && r.bottom > line) current = el;
+// the ground colour at a point on screen (y in viewport pixels)
+function groundAt(y) {
+  const zone = window.innerHeight * 0.4;   // half-width of each blend
+  const rects = chapters.map(([el]) => el.getBoundingClientRect());
+  let i = rects.findIndex((r) => y >= r.top && y < r.bottom);
+  if (i === -1) i = y < rects[0].top ? 0 : rects.length - 1;
+  const here = chapters[i][1]();
+  // blend towards the neighbour whose boundary is within the zone
+  const toNext = rects[i].bottom - y;
+  const fromPrev = y - rects[i].top;
+  if (i < chapters.length - 1 && toNext < zone) {
+    return mix(here, chapters[i + 1][1](), smooth(0.5 - toNext / (2 * zone)));
   }
-  if (current) {
-    let chapter = current.dataset.chapter;
-    // inside the questions chapter, the paper bands set the bar to paper
-    if (current.classList.contains("questions")) {
-      const band = [...current.querySelectorAll(".band")].find((b) => {
-        const r = b.getBoundingClientRect();
-        return r.top <= line && r.bottom > line;
-      });
-      if (band && !band.classList.contains("band-head")) chapter = "paper";
-    }
-    if (bar.dataset.chapter !== chapter) bar.dataset.chapter = chapter;
-    bar.style.backgroundColor = current === hero && heroSky ? heroSky : "";
+  if (i > 0 && fromPrev < zone) {
+    return mix(chapters[i - 1][1](), here, smooth(0.5 + fromPrev / (2 * zone)));
   }
+  return here;
+}
+
+function paintGround() {
+  document.body.style.backgroundColor = rgb(groundAt(window.innerHeight / 2));
+  const overHero = hero.getBoundingClientRect().bottom > bar.offsetHeight / 2;
+  bar.style.setProperty("--bar-ground", overHero && heroSky ? heroSky : rgb(groundAt(bar.offsetHeight / 2)));
 }
 let ticking = false;
 window.addEventListener("scroll", () => {
   if (!ticking) {
-    requestAnimationFrame(() => { chapterUnderBar(); ticking = false; });
+    requestAnimationFrame(() => { paintGround(); ticking = false; });
     ticking = true;
   }
 }, { passive: true });
-chapterUnderBar();
+window.addEventListener("resize", paintGround);
+paintGround();
 
 // ---------- Entrances: heading, then text, then picture, once per section ----------
 const groups = [

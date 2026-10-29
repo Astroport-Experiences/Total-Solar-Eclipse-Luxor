@@ -12,6 +12,17 @@
   --sun: #f7f4ec;          /* the solar disc */
   --paper: #ffffff;
   --paper-step: #eeeeee;   /* one tone step from paper */
+
+  /* After the first screen the page is quiet: one dark ground whose tint drifts
+     from chapter to chapter (set by script.js as you scroll), light ink throughout */
+  --tone-why: #17140f;        /* sandstone at dusk */
+  --tone-minutes: #07080a;    /* totality */
+  --tone-safety: #0d1119;     /* blue hour */
+  --tone-next: #101216;       /* night sky */
+  --tone-questions: #0b0e14;
+  --tone-footer: #050506;
+  --lift: rgba(255, 255, 255, 0.045);  /* one tone step up from any ground */
+  --ink-soft: #c9ccd4;
   --ink: #0a0a0a;
   --ink-light: #ffffff;
   --accent: var(--sand);
@@ -51,8 +62,9 @@ body {
   font-weight: 400;
   line-height: 1.45;
   letter-spacing: -0.005em;
-  color: var(--ink);
-  background: var(--sky);
+  color: var(--ink-light);
+  background: var(--tone-why);
+  transition: background-color 120ms linear;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -100,11 +112,8 @@ a { color: inherit; text-underline-offset: 0.2em; }
   min-height: 90svh;
   padding: var(--chapter-pad) var(--margin);
 }
-[data-chapter="sky"]   { background: var(--sky);   color: var(--ink-light); }
-[data-chapter="sand"]  { background: var(--sand);  color: var(--ink); }
-[data-chapter="night"] { background: var(--night); color: var(--ink-light); }
-[data-chapter="pale"]  { background: var(--sky-pale); color: var(--ink); }
-[data-chapter="paper"] { background: var(--paper); color: var(--ink); }
+/* chapters carry no fill of their own: the page ground blends between their tones */
+[data-chapter] { color: var(--ink-light); }
 
 /* ---------- Button ---------- */
 .button {
@@ -133,16 +142,15 @@ a { color: inherit; text-underline-offset: 0.2em; }
   gap: clamp(16px, 2.4vw, 36px);
   padding: 0 var(--margin);
   font-size: var(--step-small);
-  transition: background-color var(--t-ink) ease, color var(--t-ink) ease;
+  background: var(--bar-ground, var(--sky));
+  color: var(--ink-light);
 }
 .bar-logo img {
   height: 46px;
   width: auto;
   transition: filter var(--t-ink) ease;
 }
-.bar[data-chapter="sand"] .bar-logo img,
-.bar[data-chapter="pale"] .bar-logo img,
-.bar[data-chapter="paper"] .bar-logo img { filter: brightness(0); }
+
 
 .bar-links {
   display: flex;
@@ -157,9 +165,7 @@ a { color: inherit; text-underline-offset: 0.2em; }
 }
 .bar-links a:hover { opacity: 0.65; }
 .bar-action { font-size: var(--step-small); min-height: 44px; }
-.bar[data-chapter="sand"] .bar-action,
-.bar[data-chapter="pale"] .bar-action,
-.bar[data-chapter="paper"] .bar-action { background: var(--night); color: var(--ink-light); }
+
 
 /* ---------- Hero: colour field, two-ink statement ---------- */
 .hero {
@@ -322,8 +328,9 @@ a { color: inherit; text-underline-offset: 0.2em; }
   font-size: var(--step-small);
 }
 .tile { padding: 28px; }
-.tile-sky { background: var(--sky); color: var(--ink-light); }
-.tile-night { background: var(--night); color: var(--ink-light); }
+.tile-sky { background: #1b2238; color: var(--ink-light); }
+.tile-night { background: #241f17; color: var(--ink-light); }
+.tile-sky .tile-figure, .tile-night .tile-figure { color: var(--sand); }
 .tile-figure {
   font-size: var(--step-head);
   font-weight: 500;
@@ -424,7 +431,6 @@ a { color: inherit; text-underline-offset: 0.2em; }
   padding: 0;
 }
 .safety-pin {
-  background: var(--night);
   color: var(--ink-light);
   padding: var(--chapter-pad) var(--margin);
 }
@@ -492,7 +498,7 @@ a { color: inherit; text-underline-offset: 0.2em; }
   gap: var(--gutter);
   transition: color var(--t-ui) var(--ease-out);
 }
-.poster-list li:hover { color: var(--sky); }
+.poster-list li:hover { color: var(--sand); }
 .poster-word {
   font-size: var(--step-display);
   font-weight: 500;
@@ -514,10 +520,9 @@ a { color: inherit; text-underline-offset: 0.2em; }
   grid-template-columns: repeat(12, 1fr);
   column-gap: var(--gutter);
   padding: 56px var(--margin);
-  background: var(--paper);
-  color: var(--ink);
+  color: var(--ink-light);
 }
-.band:nth-child(odd) { background: var(--paper-step); }
+.band:nth-child(odd) { background: var(--lift); }
 .band h3 {
   grid-column: 1 / 6;
   font-size: var(--step-lead);
@@ -528,7 +533,7 @@ a { color: inherit; text-underline-offset: 0.2em; }
 .band-head {
   min-height: 40svh;
   align-content: end;
-  background: var(--sky) !important;
+  background: transparent !important;
   color: var(--ink-light);
   padding-top: calc(var(--bar-height) + 56px);
 }
