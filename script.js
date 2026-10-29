@@ -71,17 +71,53 @@ function coverage(d) {
   return area / (Math.PI * r * r);
 }
 
-function updateEclipse() {
-  const scrollable = hero.offsetHeight - window.innerHeight;
-  const p = scrollable > 0 ? clamp(-hero.getBoundingClientRect().top / scrollable) : 0.5;
+
+// ---------- Scroll: one frame loop drives the eclipse, the ground, the bar and the reveals ----------
+// Lenis gives the wheel and trackpad an eased, inertial scroll (skipped when motion is reduced).
+// Everything that follows the scroll is updated once per frame from the same scroll value, so the
+// first screen, the ground behind the page and the bar can never drift apart.
+const scene = document.documentElement.classList.contains("scene");
+const bar = document.querySelector(".bar");
+const ground = document.querySelector(".ground");
+const corona = document.querySelector(".eclipse-corona");
+const rootStyle = getComputedStyle(document.documentElement);
+const toneOf = (name) => {
+  const hex = rootStyle.getPropertyValue(name).trim().replace("#", "");
+  return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
+};
+const chapterEls = [".why", ".minutes", ".safety", ".next", ".questions", ".footer"].map((s) => document.querySelector(s));
+const chapterTones = ["--tone-why", "--tone-minutes", "--tone-safety", "--tone-next", "--tone-questions", "--tone-footer"].map(toneOf);
+const smooth = (t) => t * t * (3 - 2 * t);
+let heroSkyRgb = SKY;
+let layout = null;
+
+// measure once (and again on resize), not on every frame
+function measure() {
+  layout = {
+    vh: window.innerHeight,
+    barMid: bar.offsetHeight / 2,
+    heroTop: hero.offsetTop,
+    heroScroll: Math.max(1, hero.offsetHeight - window.innerHeight),
+    heroBottom: hero.offsetTop + hero.offsetHeight,
+    bounds: chapterEls.map((el) => [el.offsetTop, el.offsetTop + el.offsetHeight])
+  };
+}
+
+function updateEclipse(y) {
+  const p = scene ? clamp((y - layout.heroTop) / layout.heroScroll) : 0.5;
   const dist = Math.max(0, 1 - p / 0.8);           // in Sun diameters; 0 = totality
   const cov = coverage(dist);
-  const dark = Math.pow(clamp((cov - 0.75) / 0.25), 1.6);
+  const dark = scene ? Math.pow(clamp((cov - 0.75) / 0.25), 1.6) : 0;
+  const coronaOpacity = scene ? clamp((p - 0.76) / 0.1) : 0;
 
+  heroSkyRgb = mix(SKY, NIGHT, dark);
+  heroSky = rgb(heroSkyRgb);
+  if (!scene) return;
   hero.style.setProperty("--moon-x", (dist * 0.935).toFixed(4));
   hero.style.setProperty("--moon-y", (dist * -0.355).toFixed(4));
-  hero.style.setProperty("--corona", clamp((p - 0.76) / 0.1).toFixed(3));
-  heroSky = rgb(mix(SKY, NIGHT, dark));
+  hero.style.setProperty("--corona", coronaOpacity.toFixed(3));
+  // the blended corona layer is costly to draw: take it out entirely until it is needed
+  corona.style.visibility = coronaOpacity > 0 ? "visible" : "hidden";
   hero.style.setProperty("--sky-now", heroSky);
   // the dark line of the title flips to white early, so it never sits grey on a grey-blue sky
   hero.style.setProperty("--dark-ink-now", rgb(mix([0, 0, 0], [255, 255, 255], clamp((dark - 0.08) / 0.18))));
@@ -96,70 +132,63 @@ function updateEclipse() {
   if (phase.textContent !== text) phase.textContent = text;
 }
 
-if (document.documentElement.classList.contains("scene")) {
-  window.addEventListener("scroll", () => requestAnimationFrame(updateEclipse), { passive: true });
-  window.addEventListener("resize", updateEclipse);
-  updateEclipse();
+// the ground's colour at a page position: a chapter's tone, blended across each boundary
+function groundAt(pageY) {
+  const zone = layout.vh * 0.45;
+  const tones = [heroSkyRgb, ...chapterTones];
+  const edges = [layout.heroBottom, ...layout.bounds.map((b) => b[1])];  // bottom of each chapter
+  for (let i = 0; i < tones.length; i++) {
+    const end = edges[i];
+    if (i < tones.length - 1 && pageY > end - zone && pageY < end + zone) {
+      return mix(tones[i], tones[i + 1], smooth((pageY - (end - zone)) / (2 * zone)));
+    }
+    if (pageY <= end || i === tones.length - 1) return tones[i];
+  }
+  return tones[tones.length - 1];
+}
+
+let pending = [];
+function revealPassed() {
+  if (!pending.length) return;
+  pending = pending.filter((el) => {
+    if (el.getBoundingClientRect().top < layout.vh * 1.05) { el.classList.add("is-in"); return false; }
+    return true;
+  });
+}
+
+function frame(y = window.scrollY) {
+  updateEclipse(y);
+  // one colour for the whole screen; the bar wears it too, except while it sits over the first screen
+  const tint = rgb(groundAt(y + layout.vh / 2));
+  ground.style.backgroundColor = tint;
+  bar.style.setProperty("--bar-ground", y + layout.barMid < layout.heroBottom ? heroSky : tint);
+  revealPassed();
+}
+
+measure();
+let lenis = null;
+if (!reduceMotion && typeof window.Lenis === "function") {
+  lenis = new window.Lenis({
+    autoRaf: true,
+    lerp: 0.085,                 // how softly the page settles after each wheel or trackpad move
+    wheelMultiplier: 0.95,
+    anchors: { offset: -bar.offsetHeight }
+  });
+  lenis.on("scroll", ({ scroll }) => frame(scroll));
 } else {
-  heroSky = rgb(SKY);   // reduced motion: the still partial eclipse sits in the day sky
+  let ticking = false;
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(() => { frame(); ticking = false; });
+    }
+  }, { passive: true });
 }
-
-// ---------- One ground for the page: its tint drifts between chapter tones as you scroll ----------
-// Each chapter has a tone (CSS custom properties --tone-*). Around every boundary the ground
-// blends from one tone to the next over most of a screen, so there is never a hard colour edge.
-const bar = document.querySelector(".bar");
-const rootStyle = getComputedStyle(document.documentElement);
-const toneOf = (name) => {
-  const hex = rootStyle.getPropertyValue(name).trim().replace("#", "");
-  return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
-};
-const parseRgb = (s) => (s.match(/\d+/g) || [0, 0, 0]).slice(0, 3).map(Number);
-const chapters = [
-  [hero, () => (heroSky ? parseRgb(heroSky) : [0, 0, 0])],
-  [document.querySelector(".why"), () => toneOf("--tone-why")],
-  [document.querySelector(".minutes"), () => toneOf("--tone-minutes")],
-  [document.querySelector(".safety"), () => toneOf("--tone-safety")],
-  [document.querySelector(".next"), () => toneOf("--tone-next")],
-  [document.querySelector(".questions"), () => toneOf("--tone-questions")],
-  [document.querySelector(".footer"), () => toneOf("--tone-footer")]
-];
-const smooth = (t) => t * t * (3 - 2 * t);
-
-// the ground colour at a point on screen (y in viewport pixels)
-function groundAt(y) {
-  const zone = window.innerHeight * 0.4;   // half-width of each blend
-  const rects = chapters.map(([el]) => el.getBoundingClientRect());
-  let i = rects.findIndex((r) => y >= r.top && y < r.bottom);
-  if (i === -1) i = y < rects[0].top ? 0 : rects.length - 1;
-  const here = chapters[i][1]();
-  // blend towards the neighbour whose boundary is within the zone
-  const toNext = rects[i].bottom - y;
-  const fromPrev = y - rects[i].top;
-  if (i < chapters.length - 1 && toNext < zone) {
-    return mix(here, chapters[i + 1][1](), smooth(0.5 - toNext / (2 * zone)));
-  }
-  if (i > 0 && fromPrev < zone) {
-    return mix(chapters[i - 1][1](), here, smooth(0.5 + fromPrev / (2 * zone)));
-  }
-  return here;
-}
-
-function paintGround() {
-  document.body.style.backgroundColor = rgb(groundAt(window.innerHeight / 2));
-  const overHero = hero.getBoundingClientRect().bottom > bar.offsetHeight / 2;
-  bar.style.setProperty("--bar-ground", overHero && heroSky ? heroSky : rgb(groundAt(bar.offsetHeight / 2)));
-}
-let ticking = false;
-window.addEventListener("scroll", () => {
-  if (!ticking) {
-    requestAnimationFrame(() => { paintGround(); ticking = false; });
-    ticking = true;
-  }
-}, { passive: true });
-window.addEventListener("resize", paintGround);
-paintGround();
+window.addEventListener("resize", () => { measure(); frame(lenis ? lenis.scroll : window.scrollY); });
+window.addEventListener("load", () => { measure(); frame(lenis ? lenis.scroll : window.scrollY); });
 
 // ---------- Entrances: heading, then text, then picture, once per section ----------
+// They start just before an element reaches the screen, so content is already settling as it arrives.
 const groups = [
   ".hero-title > span, .hero-lede",
   ".why-head > *, .mosaic-photo, .tile",
@@ -171,42 +200,19 @@ const groups = [
   ".band"
 ];
 
-if (!reduceMotion && "IntersectionObserver" in window) {
-  const observer = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-in");
-        observer.unobserve(entry.target);
-      }
-    }
-  }, { rootMargin: "0px 0px -8% 0px", threshold: 0.05 });
-
+if (!reduceMotion) {
   for (const selector of groups) {
     document.querySelectorAll(selector).forEach((el, i) => {
       el.setAttribute("data-rise", "");
-      el.style.setProperty("--i", String(i % 6));
-      observer.observe(el);
+      el.style.setProperty("--i", String(i % 4));
+      pending.push(el);
     });
   }
-  // the hero photograph settles from a slow zoom as it enters
-  document.querySelectorAll(".mosaic-photo").forEach((el) => observer.observe(el));
-
-  // a fast jump (a link, the end key) can skip past the observer: reveal anything already passed
-  const sweep = () => {
-    document.querySelectorAll("[data-rise]:not(.is-in), .mosaic-photo:not(.is-in)").forEach((el) => {
-      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add("is-in");
-    });
-  };
-  let sweepQueued = false;
-  window.addEventListener("scroll", () => {
-    if (!sweepQueued) {
-      sweepQueued = true;
-      setTimeout(() => { sweep(); sweepQueued = false; }, 120);
-    }
-  }, { passive: true });
+  document.querySelectorAll(".mosaic-photo").forEach((el) => { if (!pending.includes(el)) pending.push(el); });
 } else {
   document.querySelectorAll(".mosaic-photo").forEach((el) => el.classList.add("is-in"));
 }
+frame();
 
 // ---------- The time-lapse only plays while it is on screen ----------
 const video = document.querySelector(".stage-video");

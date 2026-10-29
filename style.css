@@ -46,14 +46,25 @@
   --radius: 0;
   --t-ui: 180ms;
   --t-ink: 300ms;
-  --t-rise: 700ms;
+  --t-rise: 560ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ---------- Base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; scroll-padding-top: var(--bar-height); }
+html { scroll-behavior: smooth; scroll-padding-top: var(--bar-height); background: var(--tone-footer); }
+html.lenis { scroll-behavior: auto; }
+
+/* the page ground: one fixed layer behind everything, tinted by script.js as you scroll */
+.ground {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--tone-why);
+  transform: translateZ(0);
+  pointer-events: none;
+}
 
 body {
   margin: 0;
@@ -63,8 +74,7 @@ body {
   line-height: 1.45;
   letter-spacing: -0.005em;
   color: var(--ink-light);
-  background: var(--tone-why);
-  transition: background-color 120ms linear;
+  background: transparent;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -584,13 +594,13 @@ a { color: inherit; text-underline-offset: 0.2em; }
 /* ---------- Entrances (only when script runs; content never waits otherwise) ---------- */
 .js [data-rise] {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(18px);
   transition: opacity var(--t-rise) var(--ease-out), transform var(--t-rise) var(--ease-out);
-  transition-delay: calc(var(--i, 0) * 80ms);
+  transition-delay: calc(var(--i, 0) * 70ms);
 }
 .js [data-rise].is-in { opacity: 1; transform: none; }
 
-.mosaic-photo img { transform: scale(1.08); transition: transform 2.4s var(--ease-out); }
+.mosaic-photo img { transform: scale(1.05); transition: transform 1.4s var(--ease-out); }
 .mosaic-photo.is-in img { transform: scale(1); }
 
 /* ---------- Tablet ---------- */
