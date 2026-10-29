@@ -217,6 +217,17 @@ a { color: inherit; text-underline-offset: 0.2em; }
   overflow: hidden;
   background: var(--sun);
 }
+/* The Sun in visible light from NASA SDO (10 August 2024, near solar maximum), its
+   orange false colour toned to a pale gold. The disc fills 91.5% of the frame. */
+.eclipse-photosphere {
+  position: absolute;
+  width: 111%;
+  height: 111%;
+  max-width: none;
+  left: -5.5%;
+  top: -5.5%;
+  filter: saturate(0.4) hue-rotate(16deg) brightness(1.22);
+}
 .eclipse-moon {
   position: absolute;
   inset: -1px;
@@ -560,7 +571,7 @@ a { color: inherit; text-underline-offset: 0.2em; }
 .footer-meta a:hover, .footer-top-link:hover { color: var(--accent); }
 .credits {
   margin-top: 24px;
-  max-width: 120ch;
+  max-width: 68ch;
   font-size: var(--step-small);
   line-height: 1.5;
 }

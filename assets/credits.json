@@ -230,5 +230,27 @@
    "Share-alike: an altered version (recoloured, combined with other pictures) must be shared under the same licence."
   ],
   "saved": "2026-10-29T20:09:16.845Z"
+ },
+ {
+  "file": "assets/sun-sdo-2024-08-10.jpg",
+  "media": "image",
+  "ref": "commons:151345047",
+  "title": "SDO 20240810 000000 4096 HMIIC (HMI)",
+  "creator": "Courtesy of NASA/SDO and the AIA, EVE, and HMI science teams.",
+  "creatorUrl": null,
+  "date": "Taken on 10 August 2024, 00:00:00",
+  "license": "public domain",
+  "licenseCode": "pd",
+  "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+  "creditRequired": false,
+  "page": "https://commons.wikimedia.org/wiki/File:SDO_20240810_000000_4096_HMIIC_(HMI).jpg",
+  "via": "Wikimedia Commons",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/SDO_20240810_000000_4096_HMIIC_%28HMI%29.jpg/1280px-SDO_20240810_000000_4096_HMIIC_%28HMI%29.jpg",
+  "width": 1280,
+  "height": 1280,
+  "bytes": 229922,
+  "credit": "\"SDO 20240810 000000 4096 HMIIC (HMI)\" by Courtesy of NASA/SDO and the AIA, EVE, and HMI science team…, public domain, via Wikimedia Commons",
+  "notes": [],
+  "saved": "2026-10-29T20:40:15.819Z"
  }
 ]
