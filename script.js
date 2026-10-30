@@ -15,6 +15,32 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 60000);
 
+// ---------- Ticker under the bar: days, hours, minutes and seconds ----------
+const ticker = document.getElementById("ticker");
+const tick = {
+  days: document.getElementById("t-days"),
+  hours: document.getElementById("t-hours"),
+  minutes: document.getElementById("t-minutes"),
+  seconds: document.getElementById("t-seconds")
+};
+function updateTicker() {
+  const left = Math.floor((target - Date.now()) / 1000);
+  if (left <= 0) {
+    ticker.textContent = "Totality has reached Luxor";
+    return;
+  }
+  const parts = {
+    days: String(Math.floor(left / 86400)),
+    hours: pad(Math.floor((left % 86400) / 3600)),
+    minutes: pad(Math.floor((left % 3600) / 60)),
+    seconds: pad(left % 60)
+  };
+  for (const key in parts) if (tick[key].textContent !== parts[key]) tick[key].textContent = parts[key];
+  // wake on the next whole second, so the seconds never skip or stall
+  setTimeout(updateTicker, 1000 - (Date.now() % 1000) + 10);
+}
+updateTicker();
+
 // ---------- Move through totality ----------
 const moments = [
   [0, "The diamond ring fades. Pink prominences flash at the Moon's edge for a few seconds. Glasses off."],

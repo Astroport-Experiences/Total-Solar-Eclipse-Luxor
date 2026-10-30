@@ -53,6 +53,7 @@
   --section: clamp(4.5rem, 10vw, 9rem);
   --gutter: clamp(1.25rem, 4vw, 3rem);
   --bar-h: 4rem;
+  --ticker-h: 2.25rem;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -61,7 +62,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: var(--bar-h);
+  scroll-padding-top: calc(var(--bar-h) + var(--ticker-h));
   -webkit-text-size-adjust: 100%;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -195,10 +196,13 @@ figcaption {
 
 /* ---------- Bar ---------- */
 
-.bar {
+.masthead {
   position: sticky;
   top: 0;
   z-index: 50;
+}
+
+.bar {
   display: flex;
   align-items: center;
   gap: var(--space-lg);
@@ -230,6 +234,51 @@ figcaption {
 @media (max-width: 960px) {
   .bar-links { display: none; }
   .bar-action { margin-left: auto; }
+}
+
+/* the countdown rides under the bar, so it is on screen all the way down the page */
+.ticker {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0 1.25rem;
+  height: var(--ticker-h);
+  padding: 0 var(--gutter);
+  background: #1C1917;
+  color: var(--night-ink);
+  border-bottom: 1px solid var(--night-border);
+  font-size: 0.75rem;
+  line-height: var(--ticker-h);
+  white-space: nowrap;
+}
+.ticker-label {
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-night);
+}
+.ticker-unit { display: inline-flex; align-items: baseline; gap: 0.3em; }
+.ticker-num {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  font-variant-numeric: lining-nums tabular-nums;
+  min-width: 2ch;
+  text-align: right;
+}
+#t-days { min-width: 3ch; }
+.ticker-long { color: var(--night-muted); letter-spacing: 0.04em; }
+.ticker-short { display: none; color: var(--night-muted); }
+
+@media (max-width: 640px) {
+  .ticker { gap: 0 0.75rem; }
+  .ticker-label { letter-spacing: 0.1em; }
+  .ticker-long { display: none; }
+  .ticker-short { display: inline; }
+  .ticker-unit { gap: 0.1em; }
+}
+@media (max-width: 359px) {
+  .ticker-label { display: none; }
 }
 
 /* ---------- Night ---------- */
@@ -288,7 +337,7 @@ figcaption {
 .actions { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-md); margin-top: var(--space-xl); }
 
 .cover-photo { grid-column: 7 / 13; grid-row: 1; margin-left: -3rem; }
-.cover-photo img { width: 100%; aspect-ratio: 1; max-height: calc(100svh - var(--bar-h) - 12rem); object-fit: cover; }
+.cover-photo img { width: 100%; aspect-ratio: 1; max-height: calc(100svh - var(--bar-h) - var(--ticker-h) - 12rem); object-fit: cover; }
 .cover-photo figcaption { text-align: right; }
 
 .facts {
